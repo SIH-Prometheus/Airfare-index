@@ -1,10 +1,10 @@
-﻿from datetime import date, time, datetime
+from datetime import date, time, datetime, timezone
 from decimal import Decimal
 from prometheus.models import FareObservation, SourceType, CabinClass, RouteIndex, AirfareIndex, Alert, AlertSeverity, AlertRuleType
 
 def test_fare_observation_valid_creation():
     obs = FareObservation(
-        scraped_at=datetime.utcnow(),
+        scraped_at=datetime.now(timezone.utc),
         source_type=SourceType.AIRLINE_DIRECT,
         source_name="IndiGo",
         carrier_iata="6e",
@@ -30,7 +30,7 @@ def test_fare_observation_valid_creation():
 
 def test_route_index_creation():
     idx = RouteIndex(
-        calculated_at=datetime.utcnow(),
+        calculated_at=datetime.now(timezone.utc),
         index_date=date(2026, 9, 11),
         route_pair="del-bom",
         origin_iata="del",
@@ -46,7 +46,7 @@ def test_route_index_creation():
 
 def test_alert_model():
     alert = Alert(
-        triggered_at=datetime.utcnow(),
+        triggered_at=datetime.now(timezone.utc),
         rule_type=AlertRuleType.WOW_PERCENT_CHANGE,
         severity=AlertSeverity.HIGH,
         route_pair="DEL-BLR",

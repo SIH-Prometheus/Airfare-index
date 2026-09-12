@@ -1,4 +1,4 @@
-﻿from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 class Settings(BaseSettings):
@@ -6,7 +6,10 @@ class Settings(BaseSettings):
 
     ENV: str = Field(default="development")
     LOG_LEVEL: str = Field(default="INFO")
-    DB_URL: str = Field(default="postgresql+asyncpg://prometheus:secret@localhost:5432/prometheus")
+    DB_URL: str = Field(default="postgresql+asyncpg://postgres:postgres@localhost:5432/prometheus")
+    DB_POOL_SIZE: int = Field(default=10)
+    DB_MAX_OVERFLOW: int = Field(default=20)
+    DB_POOL_TIMEOUT: int = Field(default=30)
     MINIO_ENDPOINT: str = Field(default="localhost:9000")
     MINIO_ACCESS_KEY: str = Field(default="minioadmin")
     MINIO_SECRET_KEY: str = Field(default="minioadmin")

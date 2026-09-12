@@ -1,4 +1,4 @@
-﻿# PROMETHEUS — Master Build Progress Checklist
+# PROMETHEUS — Master Build Progress Checklist
 
 This file tracks the implementation status of all phases in the PROMETHEUS Real-time Airfare Price Index (APIx) build. Antigravity and human developers update this file as each phase completes its Definition of Done.
 
@@ -18,7 +18,7 @@ This file tracks the implementation status of all phases in the PROMETHEUS Real-
 - [ ] **Phase 02 — Scraping**: Playwright framework + IndiGo, MakeMyTrip, Air India scrapers (`docs/phases/phase-02-scraping.md`)
 - [ ] **Phase 03 — Raw Storage**: MinIO object lake & compressed Parquet storage (`docs/phases/phase-03-raw-storage.md`)
 - [ ] **Phase 04 — ETL**: Cleaning, normalisation, deduplication, quality gate engine (`docs/phases/phase-04-etl.md`)
-- [ ] **Phase 05 — Database**: PostgreSQL schema, async SQLAlchemy ORM, Alembic migrations (`docs/phases/phase-05-database.md`)
+- [x] **Phase 05 — Database**: PostgreSQL schema, async SQLAlchemy ORM, Alembic migrations (`docs/phases/phase-05-database.md`)
 - [ ] **Phase 06 — Index Engine**: Jevons geometric route index + DGCA passenger-weighted APIx (`docs/phases/phase-06-index-engine.md`)
 - [ ] **Phase 07 — Dashboard**: FastAPI REST API + Next.js interactive UI dashboard (`docs/phases/phase-07-dashboard.md`)
 
@@ -41,5 +41,6 @@ This file tracks the implementation status of all phases in the PROMETHEUS Real-
 ## Current Status
 - **Documentation Set**: 100% Complete (All 18 files created and verified).
 - **Core Scaffold**: 100% Complete (`pyproject.toml`, `.env.example`, `Makefile`, package structure).
-- **Completed Phases**: Phase 00 (Foundation) & Phase 01 (Data Model).
+- **Completed Phases**: Phase 00 (Foundation), Phase 01 (Data Model), and Phase 05 (Database).
 - **Next Phase**: Phase 02 (Scraping).
+
