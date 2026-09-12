@@ -1,4 +1,13 @@
-from prefect import flow
+try:
+    from prefect import flow
+except ImportError:
+    def flow(*args, **kwargs):
+        if len(args) == 1 and callable(args[0]):
+            return args[0]
+        def decorator(func):
+            return func
+        return decorator
+
 from prometheus.orchestration.tasks import run_scrape, run_etl, run_index_computation, check_alerts
 from typing import Dict, Any
 

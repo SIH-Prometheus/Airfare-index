@@ -2,8 +2,8 @@ from datetime import date, time, datetime, timezone
 from decimal import Decimal
 import pytest
 from prometheus.models.fare import FareObservation, SourceType, CabinClass
-from prometheus.db.models import FareObservationModel
-from prometheus.db.repository import FareRepository
+from prometheus.database.models import FareObservationModel
+from prometheus.database.repository import FareRepository
 
 def test_fare_observation_to_orm_model_mapping():
     obs = FareObservation(

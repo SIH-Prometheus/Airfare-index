@@ -138,3 +138,74 @@ export interface Airport {
   city:    string;
   country: string;
 }
+
+// ── MVP: DEL→BOM Airfare Index ─────────────────────────────────────────────
+
+export interface AirlineFare {
+  airline:      string;
+  average_fare: number;
+}
+
+/** Mirrors PipelineStatusSchema — mutable fields set during pipeline execution */
+export interface PipelineStatus {
+  scraper:    "ok" | "error" | "pending";
+  minio:      "ok" | "error" | "pending";
+  postgresql: "ok" | "error" | "pending";
+  index:      "ok" | "error" | "pending";
+}
+
+/** Mirrors ScrapeMetrics Pydantic schema */
+export interface ScrapeMetrics {
+  average_fare:  number;
+  minimum_fare:  number;
+  maximum_fare:  number;
+  airfare_index: number;
+  baseline_fare: number;
+  sample_size:   number;
+  etl_inserted:  number;
+}
+
+export interface ScrapeResponse {
+  success:       boolean;
+  origin:        string;
+  destination:   string;
+  data_source:   string;   // "live" | "sample_fallback"
+  pipeline:      PipelineStatus;
+  metrics:       ScrapeMetrics;
+  airline_fares: AirlineFare[];
+  scraped_at:    string;
+}
+
+export interface AirfareIndexResponse {
+  success:       boolean;
+  origin:        string;
+  destination:   string;
+  data_source:   string;
+  metrics:       ScrapeMetrics;
+  airline_fares: AirlineFare[];
+  calculated_at: string;
+}
+
+export interface TrendPoint {
+  calculated_at: string;
+  average_fare:  number;
+  minimum_fare:  number;
+  maximum_fare:  number;
+  airfare_index: number;
+}
+
+export interface FlightRecord {
+  id:              number;
+  airline:         string;
+  flight_number:   string;
+  origin:          string;
+  destination:     string;
+  departure_time:  string;
+  arrival_time:    string;
+  duration:        string;
+  stops:           string;
+  price:           number;
+  currency:        string;
+  source_platform: string;
+  scraped_at:      string;
+}

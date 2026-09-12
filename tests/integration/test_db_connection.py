@@ -2,7 +2,7 @@ import pytest
 import pytest_asyncio
 from sqlalchemy import text
 
-from prometheus.db.session import (
+from prometheus.database.session import (
     check_db_connection,
     close_async_engine,
     get_db_session,

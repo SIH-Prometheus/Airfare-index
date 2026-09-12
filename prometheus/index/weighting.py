@@ -46,15 +46,15 @@ def get_base_weights() -> pl.DataFrame:
     DGCA passenger-traffic-derived weights.
     """
 
-  # Updated route weights calculated from DGCA Annual Domestic City-Pair Traffic Statistics
-weights = {
-    "DEL-BOM": 0.296,
-    "DEL-BLR": 0.202,
-    "BOM-BLR": 0.178,
-    "DEL-CCU": 0.120,
-    "MAA-DEL": 0.106,
-    "BLR-HYD": 0.098,
-}
+    # Updated route weights calculated from DGCA Annual Domestic City-Pair Traffic Statistics
+    weights = {
+        "DEL-BOM": 0.296,
+        "DEL-BLR": 0.202,
+        "BOM-BLR": 0.178,
+        "DEL-CCU": 0.120,
+        "MAA-DEL": 0.106,
+        "BLR-HYD": 0.098,
+    }
 
 
     df = pl.DataFrame(

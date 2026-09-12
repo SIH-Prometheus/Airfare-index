@@ -4,12 +4,15 @@ from pathlib import Path
 
 import polars as pl
 
+pl.Config.set_ascii_tables(True)
+
 
 # ============================================================
 # FILE PATHS
 # ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent
+REPO_ROOT = BASE_DIR.parent.parent
 
 INPUT_FILE = BASE_DIR / "data" / "raw_data.json"
 OUTPUT_FILE = BASE_DIR / "data" / "cleaned_data.json"
@@ -20,13 +23,23 @@ OUTPUT_FILE = BASE_DIR / "data" / "cleaned_data.json"
 # ============================================================
 
 def load_raw_data():
+    input_path = INPUT_FILE
+    if not input_path.exists():
+        candidates = [
+            REPO_ROOT / "data" / "raw_data.json",
+            REPO_ROOT / "data" / "sample" / "DEL_BOM_sample.json",
+            BASE_DIR / "data" / "sample" / "DEL_BOM_sample.json",
+        ]
+        for cand in candidates:
+            if cand.exists():
+                input_path = cand
+                break
+        else:
+            raise FileNotFoundError(
+                f"Raw data file not found:\n{INPUT_FILE}"
+            )
 
-    if not INPUT_FILE.exists():
-        raise FileNotFoundError(
-            f"Raw data file not found:\n{INPUT_FILE}"
-        )
-
-    with open(INPUT_FILE, "r", encoding="utf-8") as file:
+    with open(input_path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
     if not isinstance(data, list):
@@ -461,7 +474,7 @@ def clean_data(data):
 # ============================================================
 
 def save_cleaned_data(df):
-
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     df.write_json(OUTPUT_FILE)
 
     print(

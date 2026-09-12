@@ -7,7 +7,7 @@ from sqlalchemy import select
 from prometheus.models.fare import FareObservation, SourceType, CabinClass
 from prometheus.models.index import RouteIndex, AirfareIndex
 from prometheus.models.alert import Alert, AlertSeverity, AlertRuleType
-from prometheus.db.models import (
+from prometheus.database.models import (
     FareObservationModel,
     RouteIndexModel,
     AirfareIndexModel,

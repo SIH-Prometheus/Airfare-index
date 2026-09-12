@@ -1,7 +1,7 @@
 import asyncio
 import typer
 from prometheus.config import settings
-from prometheus.db import check_db_connection
+from prometheus.database.session import check_db_connection
 
 app = typer.Typer(help="PROMETHEUS Airfare Price Index CLI")
 

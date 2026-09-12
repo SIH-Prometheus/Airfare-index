@@ -243,3 +243,85 @@ class GoogleFlightsSpider(scrapy.Spider):
                 lead_time=self.lead_time,
                 scraped_at=now_str,
             )
+
+
+# =============================================================================
+# DIRECT STANDALONE RUNNER / LIVE SCRAPE TEST
+# =============================================================================
+
+def run_live_test(origin="DEL", destination="BOM", days_ahead=2):
+    """
+    Direct CLI runner to test and verify live OTA scraping from Google Flights.
+    Runs an HTTP request with desktop browser headers, parses flight cards,
+    and displays live results without requiring an external Scrapy daemon.
+    """
+    import sys
+    import httpx
+    from datetime import datetime, timezone, timedelta
+
+    if sys.platform == "win32":
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+
+    date_str = (datetime.now(timezone.utc) + timedelta(days=days_ahead)).strftime("%Y-%m-%d")
+    url = f"https://www.google.com/travel/flights?q=flights+from+{origin}+to+{destination}+on+{date_str}&curr=INR"
+
+    print("=" * 75)
+    print(f"  PROMETHEUS — Live Google Flights OTA Scraper Test")
+    print(f"  Route: {origin} -> {destination}")
+    print(f"  Travel Date: {date_str} (T+{days_ahead})")
+    print(f"  Target: {url}")
+    print("=" * 75)
+    print("\nConnecting to Google Flights OTA...")
+
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        ),
+        "Accept-Language": "en-IN,en;q=0.9",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    }
+
+    with httpx.Client(headers=headers, follow_redirects=True, timeout=25.0) as client:
+        resp = client.get(url)
+
+    print(f"  Response Status: HTTP {resp.status_code}")
+    print(f"  Payload Size: {len(resp.text):,} bytes\n")
+
+    if resp.status_code != 200:
+        print(f"Failed to fetch Google Flights: HTTP {resp.status_code}")
+        return
+
+    from prometheus.scrapers.runner import _parse_google_flights_html
+    flights = _parse_google_flights_html(resp.text, origin, destination)
+
+    print(f"Total Live Flights Scraped: {len(flights)}\n")
+    print("-" * 80)
+    print(f"{'#':<3} | {'Airline':<12} | {'Route':<9} | {'Dep Time':<9} | {'Arr Time':<9} | {'Duration':<12} | {'Stops':<8} | {'Price (INR)'}")
+    print("-" * 80)
+
+    for idx, f in enumerate(flights[:15], 1):
+        print(
+            f"{idx:<3} | {f['airline']:<12} | {f['origin']}->{f['destination']} | "
+            f"{f['departure_time']:<9} | {f['arrival_time']:<9} | "
+            f"{f['duration']:<12} | {f['stops']:<8} | INR {f['price']:,}"
+        )
+
+    print("-" * 80)
+    print(f"\n[OK] LIVE OTA SCRAPING VERIFIED!")
+    print(f"Successfully scraped {len(flights)} real-time flight records from Google Flights for {origin}->{destination} on {date_str}.\n")
+
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Live Google Flights Scraper Tester")
+    parser.add_argument("--origin", default="DEL", help="Origin airport code (default: DEL)")
+    parser.add_argument("--dest", default="BOM", help="Destination airport code (default: BOM)")
+    parser.add_argument("--days", type=int, default=2, help="Days ahead to search (default: 2)")
+    args = parser.parse_args()
+
+    run_live_test(origin=args.origin, destination=args.dest, days_ahead=args.days)

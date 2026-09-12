@@ -1,4 +1,13 @@
-from prefect import task
+try:
+    from prefect import task
+except ImportError:
+    def task(*args, **kwargs):
+        if len(args) == 1 and callable(args[0]):
+            return args[0]
+        def decorator(func):
+            return func
+        return decorator
+
 from typing import List, Dict, Any
 
 @task

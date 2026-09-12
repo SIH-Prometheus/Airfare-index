@@ -9,7 +9,7 @@ from alembic import context
 
 # Import Prometheus models and settings
 from prometheus.config import settings
-from prometheus.db.models import Base
+from prometheus.database.models import Base
 
 # Alembic Config object
 config = context.config
