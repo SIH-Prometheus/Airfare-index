@@ -1,4 +1,4 @@
-﻿from datetime import date, time, datetime
+from datetime import date, time, datetime
 from decimal import Decimal
 from enum import Enum
 from typing import Optional
@@ -45,6 +45,13 @@ class FareObservation(BaseModel):
 
     @model_validator(mode="after")
     def validate_total_fare_and_hash(self) -> "FareObservation":
+        # Validate total fare
+        if self.total_fare_inr != self.base_fare_inr + self.taxes_inr:
+            raise ValueError(
+                f"total_fare_inr ({self.total_fare_inr}) does not match "
+                f"base_fare_inr ({self.base_fare_inr}) + taxes_inr ({self.taxes_inr})"
+            )
+
         # Compute SHA-256 hash if empty
         if not self.raw_hash:
             raw_str = f"{self.source_name}:{self.carrier_iata}:{self.flight_number}:{self.origin_iata}:{self.destination_iata}:{self.departure_date}:{self.departure_time}"
