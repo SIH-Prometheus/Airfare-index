@@ -21,7 +21,7 @@ prometheus/models/
 ├── fare.py
 ├── index.py
 └── alert.py
-```
+``` 
 
 ## Implementation Steps
 ### Step 1: Create `prometheus/models/fare.py`
@@ -75,7 +75,7 @@ class FareObservation(BaseModel):
 - `tests/unit/test_models.py`
 
 ## Definition of Done
-```bash
+```bash 
 pytest tests/unit/test_models.py
 ```
 

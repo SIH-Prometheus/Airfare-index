@@ -60,7 +60,7 @@ from prometheus.config import settings
 app = typer.Typer(help="PROMETHEUS Airfare Price Index CLI")
 
 @app.command()
-def info():
+def info(): 
     typer.echo(f"PROMETHEUS Environment: {settings.ENV}")
     typer.echo(f"Log Level: {settings.LOG_LEVEL}")
 
