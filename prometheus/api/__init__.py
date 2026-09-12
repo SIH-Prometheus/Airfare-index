@@ -1,1 +1,1 @@
-"""PROMETHEUS package module."""
+"""prometheus/api/__init__.py"""
