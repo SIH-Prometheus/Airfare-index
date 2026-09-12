@@ -1,4 +1,4 @@
-[build-system]
+﻿content = """[build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
@@ -31,3 +31,7 @@ dependencies = [
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+"""
+with open("pyproject.toml", "w", encoding="utf-8") as f:
+    f.write(content)
+print("pyproject.toml written clean.")

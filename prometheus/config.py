@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
+﻿from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 
 class Settings(BaseSettings):
@@ -10,5 +10,9 @@ class Settings(BaseSettings):
     MINIO_ENDPOINT: str = Field(default="localhost:9000")
     MINIO_ACCESS_KEY: str = Field(default="minioadmin")
     MINIO_SECRET_KEY: str = Field(default="minioadmin")
+    MINIO_BUCKET_RAW: str = Field(default="prometheus-raw")
+    MINIO_BUCKET_PARQUET: str = Field(default="prometheus-parquet")
+    REDIS_URL: str = Field(default="redis://localhost:6379/0")
+    SECRET_KEY: str = Field(default="change-me-to-a-random-64-char-hex-string")
 
 settings = Settings()

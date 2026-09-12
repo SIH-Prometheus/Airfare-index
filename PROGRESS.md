@@ -14,7 +14,7 @@ This file tracks the implementation status of all phases in the PROMETHEUS Real-
 
 ### Priority Tier 1: MUST HAVE (Demoable Core Engine & MVP)
 - [x] **Phase 00 — Foundation**: Repo layout, Pydantic Settings, CLI, Makefile, pyproject.toml (`docs/phases/phase-00-foundation.md`)
-- [ ] **Phase 01 — Data Model**: Canonical `FareObservation` schema & Pydantic contracts (`docs/phases/phase-01-data-model.md`)
+- [x] **Phase 01 — Data Model**: Canonical `FareObservation` schema & Pydantic contracts (`docs/phases/phase-01-data-model.md`)
 - [ ] **Phase 02 — Scraping**: Playwright framework + IndiGo, MakeMyTrip, Air India scrapers (`docs/phases/phase-02-scraping.md`)
 - [ ] **Phase 03 — Raw Storage**: MinIO object lake & compressed Parquet storage (`docs/phases/phase-03-raw-storage.md`)
 - [ ] **Phase 04 — ETL**: Cleaning, normalisation, deduplication, quality gate engine (`docs/phases/phase-04-etl.md`)
@@ -41,4 +41,5 @@ This file tracks the implementation status of all phases in the PROMETHEUS Real-
 ## Current Status
 - **Documentation Set**: 100% Complete (All 18 files created and verified).
 - **Core Scaffold**: 100% Complete (`pyproject.toml`, `.env.example`, `Makefile`, package structure).
-- **Current Phase**: Ready for Phase 01 implementation.
+- **Completed Phases**: Phase 00 (Foundation) & Phase 01 (Data Model).
+- **Next Phase**: Phase 02 (Scraping).
