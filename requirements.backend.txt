@@ -23,6 +23,7 @@ httpx==0.27.0
 # Utilities
 structlog==24.2.0
 tenacity==8.2.3
+numpy>=1.26.0
 
 # Auth (kept for future phases)
 python-jose[cryptography]>=3.3.0
