@@ -4,42 +4,290 @@
 
 @layer base {
   :root {
-    --bg:      #f8fafc;
-    --surface: #ffffff;
-    --border:  #e2e8f0;
-    --text:    #0f172a;
-    --muted:   #64748b;
+    /* ─── Light Theme (Default) ─────────────────────────────────────── */
+    --bg:         #F7F8FC;
+    --bg-alt:     #EFF1F8;
+    --surface:    #FFFFFF;
+    --surface-2:  #F0F2F8;
+    --border:     #E2E6F0;
+    --border-2:   #D0D5E4;
+    --text:       #1A1D2E;
+    --text-2:     #374155;
+    --muted:      #6B7A99;
+    --muted-2:    #94A3BE;
+
+    /* Accent palette */
+    --accent:       #4F46E5;
+    --accent-hover: #4338CA;
+    --accent-muted: #E8E6FF;
+    --accent-bg:    #F5F3FF;
+
+    /* Status colors */
+    --green:       #059669;
+    --green-bg:    #ECFDF5;
+    --green-text:  #065F46;
+    --amber:       #D97706;
+    --amber-bg:    #FFFBEB;
+    --amber-text:  #92400E;
+    --orange:      #EA580C;
+    --orange-bg:   #FFF7ED;
+    --orange-text: #9A3412;
+    --red:         #DC2626;
+    --red-bg:      #FEF2F2;
+    --red-text:    #991B1B;
+
+    /* Chart colors */
+    --chart-1:    #4F46E5;
+    --chart-2:    #06B6D4;
+    --chart-3:    #8B5CF6;
+    --chart-4:    #059669;
+    --chart-5:    #F59E0B;
+
+    /* Shadows */
+    --shadow-sm:  0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03);
+    --shadow-md:  0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.04);
+    --shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.06), 0 4px 6px -4px rgba(0,0,0,0.04);
+    --shadow-glow: 0 0 20px rgba(79,70,229,0.12);
   }
+
   .dark {
-    --bg:      #131722;
-    --surface: #1e222d;
-    --border:  #2a2e39;
-    --text:    #d1d4dc;
-    --muted:   #b2b5be;
+    --bg:         #0F1117;
+    --bg-alt:     #141620;
+    --surface:    #1A1D2E;
+    --surface-2:  #232640;
+    --border:     #2A2E45;
+    --border-2:   #363B58;
+    --text:       #E8EAF0;
+    --text-2:     #C4C8D8;
+    --muted:      #8892B0;
+    --muted-2:    #5F6A88;
+
+    --accent:       #818CF8;
+    --accent-hover: #6366F1;
+    --accent-muted: #312E81;
+    --accent-bg:    #1E1B4B;
+
+    --green:       #34D399;
+    --green-bg:    #064E3B;
+    --green-text:  #6EE7B7;
+    --amber:       #FBBF24;
+    --amber-bg:    #78350F;
+    --amber-text:  #FDE68A;
+    --orange:      #FB923C;
+    --orange-bg:   #7C2D12;
+    --orange-text: #FDBA74;
+    --red:         #F87171;
+    --red-bg:      #7F1D1D;
+    --red-text:    #FCA5A5;
+
+    --chart-1:    #818CF8;
+    --chart-2:    #22D3EE;
+    --chart-3:    #A78BFA;
+    --chart-4:    #34D399;
+    --chart-5:    #FBBF24;
+
+    --shadow-sm:  0 1px 2px rgba(0,0,0,0.3);
+    --shadow-md:  0 4px 6px rgba(0,0,0,0.3);
+    --shadow-lg:  0 10px 15px rgba(0,0,0,0.3);
+    --shadow-glow: 0 0 20px rgba(129,140,248,0.15);
   }
+
   body {
-    @apply bg-[var(--bg)] text-[var(--text)] transition-colors duration-200;
-    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    @apply bg-[var(--bg)] text-[var(--text)] transition-colors duration-300;
+    font-family: 'Inter', 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer components {
+  /* ─── Cards ─────────────────────────────────────── */
   .card {
-    @apply bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 shadow-sm;
+    @apply rounded-2xl p-5 transition-all duration-200;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
   }
+  .card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-2);
+  }
+
+  .card-accent {
+    @apply card;
+    background: linear-gradient(135deg, var(--accent-bg) 0%, var(--surface) 100%);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .card-glass {
+    @apply rounded-2xl p-5 backdrop-blur-xl transition-all duration-200;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: var(--shadow-md);
+  }
+  .dark .card-glass {
+    background: rgba(26,29,46,0.7);
+    border: 1px solid rgba(42,46,69,0.5);
+  }
+
+  /* ─── Buttons ───────────────────────────────────── */
   .btn {
-    @apply inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-colors;
+    @apply inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-all duration-200;
+    cursor: pointer;
+  }
+  .btn:active {
+    transform: scale(0.97);
   }
   .btn-primary {
-    @apply btn bg-brand-600 text-white hover:bg-brand-700;
+    @apply btn text-white;
+    background: var(--accent);
+  }
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    box-shadow: var(--shadow-glow);
   }
   .btn-ghost {
-    @apply btn bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-[var(--text)];
+    @apply btn;
+    color: var(--text);
+    background: transparent;
   }
+  .btn-ghost:hover {
+    background: var(--surface-2);
+  }
+  .btn-outline {
+    @apply btn;
+    color: var(--accent);
+    background: transparent;
+    border: 1.5px solid var(--border);
+  }
+  .btn-outline:hover {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+
+  /* ─── Badges ────────────────────────────────────── */
   .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-bold tracking-wide;
   }
+  .badge-green {
+    @apply badge;
+    color: var(--green-text);
+    background: var(--green-bg);
+  }
+  .badge-amber {
+    @apply badge;
+    color: var(--amber-text);
+    background: var(--amber-bg);
+  }
+  .badge-orange {
+    @apply badge;
+    color: var(--orange-text);
+    background: var(--orange-bg);
+  }
+  .badge-red {
+    @apply badge;
+    color: var(--red-text);
+    background: var(--red-bg);
+  }
+  .badge-accent {
+    @apply badge;
+    color: var(--accent);
+    background: var(--accent-bg);
+  }
+
+  /* ─── Tables ────────────────────────────────────── */
   .table-row-hover {
-    @apply hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors;
+    @apply transition-colors duration-150;
   }
+  .table-row-hover:hover {
+    background: var(--surface-2);
+  }
+
+  /* ─── Status Dot ────────────────────────────────── */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+  .status-dot-green {
+    @apply status-dot;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+  .status-dot-red {
+    @apply status-dot;
+    background: var(--red);
+    box-shadow: 0 0 6px var(--red);
+  }
+  .status-dot-amber {
+    @apply status-dot;
+    background: var(--amber);
+    box-shadow: 0 0 6px var(--amber);
+  }
+}
+
+/* ─── Animations ──────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.7; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease both;
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease both;
+}
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s ease both;
+}
+
+/* Ticker bar */
+.ticker-track {
+  display: flex;
+  animation: ticker-scroll 40s linear infinite;
+  width: max-content;
+}
+
+/* ─── Scrollbar styling ────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-2);
 }

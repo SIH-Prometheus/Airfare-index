@@ -482,3 +482,191 @@ async def get_flights(
         )
         for r in rows
     ]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GET /api/alerts/current
+# ─────────────────────────────────────────────────────────────────────────────
+
+class AlertContributor(BaseModel):
+    route: str
+    contribution: float
+
+
+class AlertCurrentSchema(BaseModel):
+    severity: str
+    score: float
+    wow_change: float
+    z_score: float
+    anomaly_score: float
+    forecast_deviation: float
+    apix_value: float
+    message: str
+    contributors_detail: list[AlertContributor]
+    lead_time_pressure: dict[str, float]
+    created_at: str
+
+
+@router.get("/alerts/current", response_model=AlertCurrentSchema)
+async def get_alerts_current(
+    origin:      str = Query(default="DEL"),
+    destination: str = Query(default="BOM"),
+) -> AlertCurrentSchema:
+    """
+    Compute a real-time inflation alert based on recent index snapshots.
+    Uses the AlertEngine with WoW change + Z-score signals.
+    """
+    from sqlalchemy import text
+
+    origin = origin.upper()
+    destination = destination.upper()
+    route_pair = f"{origin}-{destination}"
+
+    # Fetch recent index snapshots
+    historical_values: list[float] = []
+    current_apix = 100.0
+    try:
+        async with get_db_session() as session:
+            result = await session.execute(
+                text("""
+                    SELECT airfare_index
+                    FROM airfare_index
+                    WHERE origin = :origin AND destination = :destination
+                    ORDER BY calculated_at DESC
+                    LIMIT 30
+                """),
+                {"origin": origin, "destination": destination},
+            )
+            rows = [float(r["airfare_index"]) for r in result.mappings().all()]
+            if rows:
+                current_apix = rows[0]
+                historical_values = list(reversed(rows))  # oldest first
+    except Exception as exc:
+        logger.warning("Alert: could not load index history: %s", exc)
+
+    # If no history, return a NORMAL alert with defaults
+    if not historical_values:
+        return AlertCurrentSchema(
+            severity="NORMAL",
+            score=0.0,
+            wow_change=0.0,
+            z_score=0.0,
+            anomaly_score=0.5,
+            forecast_deviation=0.0,
+            apix_value=current_apix,
+            message="Airfare prices are within normal range. Insufficient data for full analysis.",
+            contributors_detail=[AlertContributor(route=route_pair, contribution=0.0)],
+            lead_time_pressure={"T+1": 0.0, "T+7": 0.0},
+            created_at=datetime.now(timezone.utc).isoformat(),
+        )
+
+    # Use the real alert engine
+    from prometheus.alerts.engine import AlertEngine
+
+    alert_data = AlertEngine.generate_alert(
+        current_apix=current_apix,
+        historical_apix=historical_values,
+        route_contributions={route_pair: 100.0},
+        lead_time_pressure={"T+1": 5.0, "T+7": 2.0},
+        ml_anomaly_score=0.5,  # Phase 2 ML placeholder
+        forecast_deviation=0.0,
+    )
+
+    return AlertCurrentSchema(
+        severity=alert_data["severity"],
+        score=alert_data["score"],
+        wow_change=alert_data["wow_change"],
+        z_score=alert_data["z_score"],
+        anomaly_score=alert_data["anomaly_score"],
+        forecast_deviation=alert_data["forecast_deviation"],
+        apix_value=alert_data["apix_value"],
+        message=alert_data["message"],
+        contributors_detail=[
+            AlertContributor(**c) for c in alert_data["contributors_detail"]
+        ],
+        lead_time_pressure=alert_data["lead_time_pressure"],
+        created_at=alert_data["created_at"].isoformat()
+        if hasattr(alert_data["created_at"], "isoformat")
+        else str(alert_data["created_at"]),
+    )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GET /api/alerts/history
+# ─────────────────────────────────────────────────────────────────────────────
+
+class AlertHistoryItem(BaseModel):
+    id: str
+    severity: str
+    score: float
+    wow_change: float
+    z_score: float
+    anomaly_score: float
+    apix_value: float
+    route_pair: str
+    message: str
+    created_at: str
+
+
+class AlertHistorySchema(BaseModel):
+    items: list[AlertHistoryItem]
+    total: int
+
+
+@router.get("/alerts/history", response_model=AlertHistorySchema)
+async def get_alerts_history(
+    severity: str | None = Query(default=None),
+    limit:    int = Query(default=50, ge=1, le=200),
+) -> AlertHistorySchema:
+    """Return historical alert records from the alerts table."""
+    from sqlalchemy import text
+
+    try:
+        async with get_db_session() as session:
+            if severity:
+                result = await session.execute(
+                    text("""
+                        SELECT id, severity, current_value, baseline_value,
+                               percentage_change, route_pair, message,
+                               triggered_at, rule_type
+                        FROM alerts
+                        WHERE severity = :sev
+                        ORDER BY triggered_at DESC
+                        LIMIT :lim
+                    """),
+                    {"sev": severity.upper(), "lim": limit},
+                )
+            else:
+                result = await session.execute(
+                    text("""
+                        SELECT id, severity, current_value, baseline_value,
+                               percentage_change, route_pair, message,
+                               triggered_at, rule_type
+                        FROM alerts
+                        ORDER BY triggered_at DESC
+                        LIMIT :lim
+                    """),
+                    {"lim": limit},
+                )
+            rows = result.mappings().all()
+    except Exception as exc:
+        logger.warning("Alert history query failed: %s", exc)
+        rows = []
+
+    items = [
+        AlertHistoryItem(
+            id=str(r["id"]),
+            severity=r["severity"],
+            score=float(r.get("current_value", 0)),
+            wow_change=float(r.get("percentage_change", 0)),
+            z_score=0.0,
+            anomaly_score=0.5,
+            apix_value=float(r.get("current_value", 0)),
+            route_pair=r.get("route_pair", "DEL-BOM"),
+            message=r.get("message", ""),
+            created_at=str(r["triggered_at"]),
+        )
+        for r in rows
+    ]
+
+    return AlertHistorySchema(items=items, total=len(items))

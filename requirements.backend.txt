@@ -30,3 +30,4 @@ passlib[bcrypt]>=1.7.4
 bcrypt==4.0.1
 email-validator>=2.0.0
 polars>=1.0.0
+numpy>=1.26.0
